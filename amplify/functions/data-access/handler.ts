@@ -3,6 +3,22 @@ import axios from "axios";
 import { SignatureV4 } from "@aws-sdk/signature-v4";
 import { Sha256 } from "@aws-crypto/sha256-universal";
 
+// AppSync Mutationの入力型定義
+type DeviceStatusInput = {
+  device_Id: string;
+  humidity: number;
+  temperature: number;
+  voltage: string;
+  last_updated: string;
+  status_code: string;
+  status_description: string;
+  status_state: string;
+};
+
+type CreateDeviceStatusVariables = {
+  input: DeviceStatusInput;
+};
+
 const CREATE_DEVICE_STATUS = `
   mutation CreateDeviceStatus($input: CreateDeviceStatusInput!) {
     createDeviceStatus(input: $input) {
@@ -21,7 +37,7 @@ const CREATE_DEVICE_STATUS = `
   }
 `;
 
-async function createSignedRequest(query: string, variables: any) {
+async function createSignedRequest(query: string, variables: CreateDeviceStatusVariables) {
   const url = new URL(process.env.APPSYNC_ENDPOINT!);
   const body = { query, variables };
 
